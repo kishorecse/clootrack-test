@@ -29,6 +29,11 @@ class App extends Component<AppProps, AppState> {
   render() {
     return (
       <div className="flex-container">
+        {this.props.loading && (
+          <div className="center-loader">
+            <Loader />
+          </div>
+        )}
         {this.props.chartsList &&
           this.props.chartsList.map((chart) => (
             <div className="chart">

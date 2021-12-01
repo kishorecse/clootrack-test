@@ -5,6 +5,10 @@ const reducer = (state = {}, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST':
       return state;
+    case 'SHOW_LOADING':
+      return { ...state, loading: true };
+    case 'HIDE_LOADING':
+      return { ...state, loading: false };
     case 'FETCH_SUCCESS':
       return { ...state, chartsList: action.payload };
     default:
@@ -13,6 +17,18 @@ const reducer = (state = {}, action) => {
 };
 
 const store = createStore(reducer, applyMiddleware(thunk));
+
+function showLoading() {
+  return {
+    type: 'SHOW_LOADING',
+  };
+}
+
+function hideLoading() {
+  return {
+    type: 'HIDE_LOADING',
+  };
+}
 
 function fetchChartsRequest() {
   return {
@@ -36,13 +52,20 @@ function fetchChartsError() {
 function fetchChartsWithRedux() {
   return (dispatch) => {
     dispatch(fetchChartsRequest());
-    return fetchCharts().then(([response, json]) => {
-      if (response.status === 200) {
-        dispatch(fetchChartsSuccess(json));
-      } else {
-        dispatch(fetchChartsError());
-      }
-    });
+    dispatch(showLoading());
+    return fetchCharts()
+      .then(([response, json]) => {
+        if (response.status === 200) {
+          dispatch(fetchChartsSuccess(json));
+          dispatch(hideLoading());
+        } else {
+          dispatch(fetchChartsError());
+          dispatch(hideLoading());
+        }
+      })
+      .catch((e) => {
+        dispatch(hideLoading());
+      });
   };
 }
 
