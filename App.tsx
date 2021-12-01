@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import Chart, { ChartData } from './Chart';
 import Loader from 'react-loader-spinner';
 import { connect } from 'react-redux';
-import { fetchChartsWithRedux, store } from './redux';
+import { fetchChartsWithRedux, randomDataUpdate } from './redux';
 import './style.css';
 
 interface AppProps {
-  fetchChartsWithRedux: any;
+  fetchChartsWithRedux: Function;
+  randomDataUpdate: Function;
   chartsList: ChartData[];
   loading: boolean;
 }
@@ -24,6 +25,10 @@ class App extends Component<AppProps, AppState> {
 
   componentDidMount() {
     this.props.fetchChartsWithRedux();
+    setInterval(() => {
+      this.props.randomDataUpdate();
+      this.forceUpdate();
+    }, 1000);
   }
 
   render() {
@@ -52,4 +57,7 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { fetchChartsWithRedux })(App);
+export default connect(mapStateToProps, {
+  fetchChartsWithRedux,
+  randomDataUpdate,
+})(App);

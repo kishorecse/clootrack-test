@@ -1,7 +1,9 @@
 import { applyMiddleware, createStore } from 'redux';
+import { ChartData } from './Chart';
 import thunk from 'redux-thunk';
+import { shuffle } from './utils';
 
-const reducer = (state = {}, action) => {
+const reducer = (state: any = {}, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST':
       return state;
@@ -11,6 +13,22 @@ const reducer = (state = {}, action) => {
       return { ...state, loading: false };
     case 'FETCH_SUCCESS':
       return { ...state, chartsList: action.payload };
+
+    case 'RANDOM_UPDATE':
+      const { chartsList } = state;
+
+      const updateIndex = Math.floor(Math.random() * chartsList.length);
+      console.log(chartsList[updateIndex]);
+      const updateData: ChartData = { ...chartsList[updateIndex] };
+
+      updateData.elements = shuffle(updateData.elements);
+      chartsList[updateIndex] = updateData;
+
+      console.log(updateData);
+      return {
+        ...state,
+        chartsList,
+      };
     default:
       return state;
   }
@@ -49,6 +67,11 @@ function fetchChartsError() {
   };
 }
 
+function randomUpdateData() {
+  return {
+    type: 'RANDOM_UPDATE',
+  };
+}
 function fetchChartsWithRedux() {
   return (dispatch) => {
     dispatch(fetchChartsRequest());
@@ -69,6 +92,12 @@ function fetchChartsWithRedux() {
   };
 }
 
+function randomDataUpdate() {
+  return (dispatch) => {
+    dispatch(randomUpdateData());
+  };
+}
+
 function fetchCharts() {
   const URL =
     'https://s3-ap-southeast-1.amazonaws.com/he-public-data/chart2986176.json';
@@ -77,4 +106,4 @@ function fetchCharts() {
   );
 }
 
-export { store, fetchChartsWithRedux };
+export { store, fetchChartsWithRedux, randomDataUpdate };
