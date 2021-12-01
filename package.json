@@ -8,7 +8,8 @@
     "chart.js": "^3.5.0",
     "react": "^16.8.0",
     "react-chartjs-2": "^4.0.0",
-    "react-dom": "^16.8.0"
+    "react-dom": "^16.8.0",
+    "react-loader-spinner": "^4.0.0"
   },
   "scripts": {
     "start": "react-scripts-ts start",
